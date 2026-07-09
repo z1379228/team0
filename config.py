@@ -1,19 +1,15 @@
-from pathlib import Path
 import os
-
 from dotenv import load_dotenv
 
 load_dotenv()
 
 TOKEN = os.getenv("DISCORD_TOKEN")
-GUILD_ID = int(os.getenv("GUILD_ID"))
 
-ROOT = Path(__file__).parent
+guild_id = os.getenv("GUILD_ID")
+GUILD_ID = int(guild_id) if guild_id else None
 
-DATABASE = ROOT / "database" / "teambot.db"
+DATABASE = "database/teambot.db"
 
-PLAYER_FOLDER = ROOT / "images" / "players"
+PLAYER_FOLDER = "images/players"
 
-EXPORT_FOLDER = ROOT / "images" / "exports"
-
-ASSET_FOLDER = ROOT / "assets"
+EXPORT_FOLDER = "images/exports"

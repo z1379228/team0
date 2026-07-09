@@ -1,4 +1,3 @@
-import asyncio
 import discord
 from discord.ext import commands
 
@@ -11,8 +10,8 @@ class TeamBot(commands.Bot):
     def __init__(self):
 
         intents = discord.Intents.default()
-        intents.message_content = True
         intents.members = True
+        intents.message_content = True
 
         super().__init__(
             command_prefix="!",
@@ -27,39 +26,49 @@ class TeamBot(commands.Bot):
         await Database.initialize()
 
         # 載入所有 Cog
-        cogs = [
+        extensions = [
             "cogs.player",
+            "cogs.room",
             "cogs.team",
             "cogs.admin"
         ]
 
-        for cog in cogs:
+        for extension in extensions:
+
             try:
-                await self.load_extension(cog)
-                print(f"✅ 已載入 {cog}")
+                await self.load_extension(extension)
+                print(f"✅ 已載入 {extension}")
+
             except Exception as e:
-                print(f"❌ 載入失敗 {cog}")
+                print(f"❌ 載入失敗 {extension}")
                 print(e)
 
         # 同步 Slash Commands
         try:
-            guild = discord.Object(id=config.GUILD_ID)
 
-            self.tree.copy_global_to(guild=guild)
+            if config.GUILD_ID:
 
-            synced = await self.tree.sync(guild=guild)
+                guild = discord.Object(id=config.GUILD_ID)
+
+                self.tree.copy_global_to(guild=guild)
+
+                synced = await self.tree.sync(guild=guild)
+
+            else:
+
+                synced = await self.tree.sync()
 
             print(f"✅ 已同步 {len(synced)} 個 Slash Commands")
 
         except Exception as e:
-            print("❌ Slash 同步失敗")
+
+            print("❌ Slash Command 同步失敗")
             print(e)
 
         print("============================")
 
     async def on_ready(self):
 
-        print()
         print("============================")
         print(f"Bot：{self.user}")
         print(f"ID：{self.user.id}")
@@ -68,13 +77,6 @@ class TeamBot(commands.Bot):
         print("============================")
 
 
-async def main():
+bot = TeamBot()
 
-    bot = TeamBot()
-
-    async with bot:
-        await bot.start(config.TOKEN)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
+bot.run(config.TOKEN)
