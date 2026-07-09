@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+
+.env
+
+database/*.db
+
+images/players/*
+images/exports/*
+
+!.gitkeep
+
+.vscode/
+.idea/
